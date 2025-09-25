@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Soil Results</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <div class="container">
+        <h2>Soil Analysis Results</h2>
+        
+        <img src="/{{ image_url }}" width = "300" height = "300" alt="Soil Image"><br><br>
+        <p><strong>Detected Soil Type: </strong>{{soil_type}}</p>
+        <p><strong>Confidence: </strong>{{confidence}}</p>
+        <h3>Recommended Plants</h3>
+        <table border="2" cellpadding="10" cellspacing="1">
+            <tr>
+                <th>Plant Name</th>
+                <th>Care Tips</th>
+                <th>Season</th>
+            </tr>
+            {% for plant in plants %}
+            <tr>
+                <td>{{ plant.name }}</td>
+                <td>{{ plant.tip}}</td>
+                <td>{{ plant.season }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+        
+        <form method="POST" action="/save-garden">
+            {% for plant in plants %}
+            <label>
+                <input type="checkbox" name="plant" value="{{ plant.name }}|{{ plant.tip }}|{{ plant.season }}">
+                <strong>{{plant.name}}</strong>
+                <br>Tip:{{plant.tip}}
+                <br>Season:{{plant.season}}
+            </label>
+            <br><br>
+            {% endfor %}
+            <button type="submit">Save Selected to My Garden</button>
+        </form>
+        <a href = "/"> Back to home</a>
+        </div>
+    </body>
+</html>

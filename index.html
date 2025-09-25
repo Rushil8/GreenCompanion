@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>GreenCompanion</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <div class="container">
+        <h1> Welcome to GreenCompanion </h1>
+        <h2> Weather-Aware Garden Planner</h2>
+
+        <form method="POST">
+            <label>Entry your city:</label>
+            <input type="text" name="city" placeholder="e.g. Delhi, New York, Paris" required>
+            <button type="submit">Check Weather</button>
+        </form>
+        <p>OR</p>
+        <form action="/weather" method="get">
+            <button type="submit" name="mode" value="auto"> Auto Detect My Location</button>
+        </form>
+
+        {% if weather %}
+        <h3> Weather in {{ weather.city }} :</h3>
+        <p> Temperature: {{ weather.temp }}°C</p>
+        <p> Condition: {{ weather.description }}</p>
+        <p><strong>Advice:</strong>{{ weather.advice }}</p>
+        {% endif %}
+        <br><br>
+        <p>Your smart gardening assistant</p>
+        <a href="/upload">Upload Soil Photo</a>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Saved Plants</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <div class="container">>
+        <h2>Plants Saved to Your Garden</h2>
+        <ul>
+            {% for plant in plants %}
+            <li>
+                <strong>{{plant.name}}</strong>
+                (Season: {{plant.season}})
+                <br>
+                <em>{{plant.tip}}</em>
+            </li>
+            {% endfor %}
+        </ul>
+        <a href="/my-garden">View My Garden</a>
+        </div>
+    </body>
+</html>

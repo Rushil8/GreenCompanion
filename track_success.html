@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Success</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <div class="container">
+        <h2>Entry Saved</h2>
+        <p><strong>Plant:  {{ entry.plant }}</strong></p>
+        <p><strong>Note:  {{ entry.note }}</strong></p>
+        <p><strong>Date:  {{ entry.date }}</strong></p>
+
+        <h3>Care Instructions:</h3>
+        <ul>
+            {% for tip in entry.advice %}
+                <li>{{ tip }}</li>
+            {% endfor %}
+        </ul>
+
+        <a href="/track">Track Another</a> | <a href="/view-log">View Log</a>
+        </div>
+    </body>
+</html>

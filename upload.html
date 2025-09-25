@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Upload Soil Photo
+        </title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+
+    <body>
+        <div class="container">
+        <h2>Upload Soil Image</h2>
+        <form method = "POST" enctype="multipart/form-data">
+            <label>Upload soil photo: </label>
+            <input type="file" name="soilimage" accept="image/*" required>
+            <button type="submit">Analyse</button>
+        </form>
+        </div>
+    </body>
+</html>

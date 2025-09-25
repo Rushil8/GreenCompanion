@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My Garden</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <div class="container">
+        <h2>My Garden</h2>
+        {% if plants %}
+        <hr>
+        <ul>
+            {% for plant in plants %}
+                <li>
+                    <strong>{{plant.name}}</strong>
+                    (Season: {{ plant.season }})
+                    <br>
+                    <em>{{plant.tip}}</em>                  
+                </li>
+                <hr>
+            {% endfor %}
+        </ul>
+        <a href="/track">Track Plant Growth</a>
+        {% else %}
+            <p>Your garden is empty</p>
+        {% endif %}
+        <br>
+        <a href="/">Back to Home</a>
+        </div>
+    </body>
+</html>

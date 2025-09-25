@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Track Plants</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <div class="container">
+        <h2>Track Your Plant</h2>
+        <form method="POST">
+            <label for ="plant">Select Plant:</label><br>
+            <select name="plant" required>
+                {% for plant in plants %}
+                    <option value = "{{ plant }}">{{ plant }}</option>
+                {% else %}
+                    <option disabled>No plants saved</option>
+                {% endfor %}
+            </select><br><br>
+
+            <label for="note">Note:</label>
+            <br>
+            <textarea name="note" required></textarea>
+            <br><br>
+            <label for="date">Date:</label>
+            <input type="date" name="date" required>
+
+            <button type="submit">Save Entry</button>
+        </form>
+    </div>
+    </body>
+</html>
