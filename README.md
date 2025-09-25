@@ -38,4 +38,6 @@ soil_model.h5 – Pre-trained soil classification model
 class_indices.json – Mapping of soil classes
 
 
-© Rushil
+Copyright (c) 2025 [Rushil]. All rights reserved.
+
+This source code and all associated files are proprietary. Viewing is permitted for educational and demonstration purposes only. Copying, modifying, redistributing, or using this project in any form without explicit permission is strictly prohibited.
