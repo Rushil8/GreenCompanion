@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>My Dashboard - GreenCompanion</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
+        <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/9.6.11/firebase-auth.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Welcome to Your Dashboard</h1>
+            <p id="userEmail"></p>
+
+            <div class="dashboard-sections">
+                <section>
+                    <h2>My Garden</h2>
+                    <div class="button-group">
+                        <form action="/my-garden" method="get">
+                            <button type="submit" class="btn">View Garden</button>
+                        </form>
+                    </div>
+                </section>
+                <section>
+                    <h2>Add Plants</h2>
+                    <div class="button-group">
+                        <form action="/upload" method="get">
+                            <button type="submit" class="btn">Upload Soil & Get Plant Suggestions</button>
+                        </form>
+                    </div>
+                </section>
+                <section>
+                    <h2>Growth Tracking</h2>
+                    <div class="button-group">
+                        <form action="/track" method="get">
+                            <button type="submit" class="btn">Track Plant Growth</button>
+                        </form>
+                        <form action="/view-log" method="get">
+                            <button type="submit" class="btn">View Growth Logs</button>
+                        </form>
+                    </div>
+
+                </section>
+                <section>
+                    {% if not weather %}
+                        <h2>Weather</h2>
+                        <form action="/dashboard" method="POST">
+                            <label for="city">Enter City:</label>
+                            <input type="text" id="city" name="city" placeholder="Enter city name eg. Delhi, Chennai, New York" required>
+                            <button type="submit">Check Weather</button>
+                        </form>
+                        {% endif %}
+
+                        {% if weather %}
+                            <h2>Weather in <span style="text-transform: uppercase;">{{ weather.city }}</span></h2>
+                            <p><strong>Temperature:</strong> {{ weather.temp }}°C</p>
+                            <p><strong>Condition:</strong> {{ weather.description }}</p>
+                            <p><strong>Advice:</strong> {{ weather.advice }}</p>
+                            <a href="/dashboard">Check Another City</a>
+                        {% endif %}
+                </section>
+            </div><br><br>
+            <form action="{{ url_for('logout') }}" method="post" style="display:inline;">
+                <button type="submit" class="btn">Logout</button>
+            </form>
+        </div>
+        <script>
+            const firebaseConfig = {
+                apiKey:"AIzaSyBJynO0LmjMoB3U9lz0iGXXpXwbaEJJaIU",
+                authDomain: "greencompanion-1130b.firebaseapp.com",
+                projectId: "greencompanion-1130b",
+                storageBucket: "greencompanion-1130b.firebasestorage.app",
+                messagingSenderId: "497886219409",
+                appId: "1:497886219409:web:1e966fa2b5e8eaf2238330",
+                measurementId: "G-B49Y0FXPY8"
+            };
+            firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+
+            auth.onAuthStateChanged((user) => {
+                if(user){
+                    document.getElementById("userEmail").innerText = "Logged in as: " + user.email;
+                }else{
+                    window.location.href = "/login";
+                }
+            });
+
+            function logout(){
+                auth.signOut().then(() => {
+                    alert("Logged out");
+                    window.location.href = "/login";
+                });
+            }
+        </script>
+    </body>
+</html>

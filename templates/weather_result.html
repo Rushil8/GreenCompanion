@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Weather Result</title>
+    </head>
+    <body>
+        <div class="container">
+            {% if weather %}
+            <h2>Weather in {{ weather.city }}</h2>
+            <p>Temperature: {{ weather.temp }}</p>
+            <p>Condition: {{ weather.description }}</p>
+            <p><strong>Advice:</strong>{{ weather.advice }}</p>
+            <a href="/"> Back </a>
+            {% else %}
+            <p>Weather data not available</p>
+            {% endif %}
+        </div>
+    </body>
+</html>

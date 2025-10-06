@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Growth History</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <div class="container">
+        <h2> Your Growth & Watering Log</h2>
+        {% if log %}
+            <ul>
+                {% for entry in log %}
+                    <li>
+                        <strong>{{ entry.plant }}</strong> - {{ entry.date }}<br>
+                        Note: {{ entry.note }}<br>
+                        Advice:
+                        <ul>
+                            {% for tip in entry.advice %}
+                                <li>{{ tip }}</li>
+                            {% endfor %}
+                        </ul>
+                        <small>Logged at: {{ entry.createdAt }}</small>
+                    </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+                <p>No logs found yet. Start tracking your plants.</p>
+            {% endif %}
+        </div>
+    </body>
+</html>
