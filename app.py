@@ -17,30 +17,18 @@ from tensorflow.keras.preprocessing import image
 import numpy as np
 import json
 
-import gdown
-import os
+import gdown, os
+from tensorflow.keras.models import load_model
 
-
-def download_from_gdrive(file_id, dest_path):
-    url = f"https://drive.google.com/uc?export=download&id={file_id}"
-    session = requests.Session()
-    response = session.get(url, stream=True)
-    token = None
-    for key, value in response.cookies.items():
-        if key.startswith('download_warning'):
-            token = value
-    if token:
-        params = {'id': file_id, 'confirm': token}
-        response = session.get(url, params=params, stream=True)
-    with open(dest_path, "wb") as f:
-        for chunk in response.iter_content(32768):
-            if chunk:
-                f.write(chunk)
-
-file_id = "10a-PPzKx6QwNFTBxKiMl5_axE_h7UhGU"
 MODEL_PATH = "soil_model.h5"
-download_from_gdrive(file_id, MODEL_PATH)
-print("Model downloaded and saved.")
+GDRIVE_URL = "https://drive.google.com/uc?id=10a-PPzKx6QwNFTBxKiMl5_axE_h7UhGU"
+
+if not os.path.exists(MODEL_PATH):
+    print("Downloading model from Google Drive...")
+    gdown.download(GDRIVE_URL, MODEL_PATH, quiet=False)
+    print("Model downloaded successfully.")
+else:
+    print("Model already exists locally.")
 
 model = load_model(MODEL_PATH)
 
