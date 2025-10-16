@@ -67,8 +67,6 @@ def weather(city):
     data = get_weather(city)
     return jsonify(data)
 
-
-
 def get_user_city():
     try:
         response = requests.get("https://ipinfo.io")
@@ -101,6 +99,35 @@ def verify_token():
         return {"status": "success", "uid": user_id}
     except Exception as e:
         return {"status": "error", "message": str(e)},401
+
+from flask import session, redirect, render_template, request, jsonify
+
+@app.route("/profile", methods=["GET", "POST"])
+def profile():
+    if "user_id" not in session:
+        return redirect("/login")
+
+    user_id = session["user_id"]
+    user_ref = db.collection("users").document(user_id)
+
+    if request.method == "POST":
+        name = request.form.get("name")
+        location = request.form.get("location")
+
+        # Update Firestore user document
+        user_ref.update({"name": name, "location": location})
+
+        return render_template("profile.html", name=name, location=location, message="Profile updated successfully!")
+
+    # GET method: fetch and show current data
+    user_doc = user_ref.get()
+    if user_doc.exists:
+        user_data = user_doc.to_dict()
+    else:
+        user_data = {"name": "", "location": ""}
+
+    return render_template("profile.html", name=user_data.get("name", ""), location=user_data.get("location", ""))
+
 
 @app.route("/login", methods=["GET", "POST"])
 def login_page():
