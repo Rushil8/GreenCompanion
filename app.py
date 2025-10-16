@@ -46,6 +46,51 @@ def predict_soil_type(img_path):
     confidence = float(np.max(prediction)) * 100
     return class_labels[predicted_class], confidence
 
+from flask_caching import Cache
+import requests
+
+app = Flask(__name__)
+app.config['CACHE_TYPE'] = 'SimpleCache'
+app.config['CACHE_DEFAULT_TIMEOUT'] = 1800
+cache = Cache(app)
+
+API_KEY = "0fc745366ffc8f7d7aadae8d4103ba9a"
+
+@cache.memoize(timeout=1800)
+def get_weather(city):
+    url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
+    response = requests.get(url)
+    return response.json()
+
+@app.route("/update_health", methods=["POST"])
+def update_health():
+    if "user_id" not in session:
+        return jsonify({"status": "error", "message": "User not logged in"}), 401
+    
+    user_id = session["user_id"]
+    plant_id = request.form.get("plant_id")
+    
+    health_data = {
+        "moisture": request.form.get("moisture"),
+        "sunlight": request.form.get("sunlight"),
+        "notes": request.form.get("notes"),
+        "updatedAt": firestore.SERVER_TIMESTAMP
+    }
+    db.collection("users").document(user_id).collection("plants").document(plant_id).update(health_data)
+    
+    return jsonify({"status": "success", "message": "Plant health updated"})
+
+@app.route("/plant_health/<plant_id>")
+def plant_health(plant_id):
+    if "user_id" not in session:
+        return redirect("/login")
+    return render_template("plant_health.html", plant_id=plant_id)
+
+
+@app.route("/weather/<city>")
+def weather(city):
+    data = get_weather(city)
+    return jsonify(data)
 
 def get_user_city():
     try:
