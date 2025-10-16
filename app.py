@@ -62,12 +62,29 @@ def get_weather(city):
     response = requests.get(url)
     return response.json()
 
+@app.route("/update_health", methods=["POST"])
+def update_health():
+    if "user_id" not in session:
+        return jsonify({"status": "error", "message": "User not logged in"}), 401
+    
+    user_id = session["user_id"]
+    plant_id = request.form.get("plant_id")
+    
+    health_data = {
+        "moisture": request.form.get("moisture"),
+        "sunlight": request.form.get("sunlight"),
+        "notes": request.form.get("notes"),
+        "updatedAt": firestore.SERVER_TIMESTAMP
+    }
+    db.collection("users").document(user_id).collection("plants").document(plant_id).update(health_data)
+    
+    return jsonify({"status": "success", "message": "Plant health updated"})
+
+
 @app.route("/weather/<city>")
 def weather(city):
     data = get_weather(city)
     return jsonify(data)
-
-
 
 def get_user_city():
     try:
