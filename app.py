@@ -80,6 +80,12 @@ def update_health():
     
     return jsonify({"status": "success", "message": "Plant health updated"})
 
+@app.route("/plant_health/<plant_id>")
+def plant_health(plant_id):
+    if "user_id" not in session:
+        return redirect("/login")
+    return render_template("plant_health.html", plant_id=plant_id)
+
 
 @app.route("/weather/<city>")
 def weather(city):

@@ -59,7 +59,9 @@
                             <a href="/dashboard">Check Another City</a>
                         {% endif %}
                 </section>
-            </div><br><br>
+            </div>
+            <a href="{{ url_for('plant_health', plant_id=plant.id) }}">Update Plant Health</a>
+<br><br>
             <form action="{{ url_for('logout') }}" method="post" style="display:inline;">
                 <button type="submit" class="btn">Logout</button>
             </form>
