@@ -10,11 +10,22 @@
     <body>
         <div class="container">
         <h2>Upload Soil Image</h2>
-        <form method = "POST" enctype="multipart/form-data">
+        <form id="soilForm" method="POST" enctype="multipart/form-data">
             <label>Upload soil photo: </label>
             <input type="file" name="soilimage" accept="image/*" required>
-            <button type="submit">Analyse</button>
+            <button type="submit" id="submitBtn">Analyse</button>
         </form>
+        <div id="loading" style="display:none; font-weight:bold; color:green; margin-top:10px;">
+            <p>Analyzing soil... please wait</p>
         </div>
+        </div>
+
+        <script>
+            document.getElementById("soilForm").onsubmit = function () {
+                document.getElementById("loading").style.display = "block";
+
+                document.getElementById("submitBtn").disabled = true;
+            };
+        </script>
     </body>
 </html>

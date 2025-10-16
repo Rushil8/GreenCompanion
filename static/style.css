@@ -131,3 +131,10 @@ a:hover {
     text-decoration: underline;
     color: #1b4332;
 }
+
+
+#loading {
+    font-weight: bold;
+    color: green;
+    margin-top: 10px;
+}

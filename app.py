@@ -46,6 +46,28 @@ def predict_soil_type(img_path):
     confidence = float(np.max(prediction)) * 100
     return class_labels[predicted_class], confidence
 
+from flask_caching import Cache
+import requests
+
+app = Flask(__name__)
+app.config['CACHE_TYPE'] = 'SimpleCache'
+app.config['CACHE_DEFAULT_TIMEOUT'] = 1800
+cache = Cache(app)
+
+API_KEY = "0fc745366ffc8f7d7aadae8d4103ba9a"
+
+@cache.memoize(timeout=1800)
+def get_weather(city):
+    url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
+    response = requests.get(url)
+    return response.json()
+
+@app.route("/weather/<city>")
+def weather(city):
+    data = get_weather(city)
+    return jsonify(data)
+
+
 
 def get_user_city():
     try:
