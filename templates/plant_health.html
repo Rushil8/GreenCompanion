@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Update Plant Health</title>
+</head>
+<body>
+    <h2>Update Plant Health Data</h2>
+    <form action="/update_health" method="POST">
+        <!-- Hidden plant ID passed from Flask -->
+        <input type="hidden" name="plant_id" value="{{ plant_id }}">
+
+        <label for="moisture">Moisture Level:</label>
+        <input type="text" id="moisture" name="moisture" required placeholder="Enter moisture level e.g. moderate" />
+
+        <label for="sunlight">Sunlight Exposure:</label>
+        <input type="text" id="sunlight" name="sunlight" required placeholder="Enter sunlight e.g. full sun, partial shade" />
+
+        <label for="notes">Notes:</label>
+        <textarea id="notes" name="notes" rows="4" cols="50" placeholder="Add any additional notes..."></textarea>
+
+        <button type="submit">Save Health Data</button>
+    </form>
+</body>
+</html>
