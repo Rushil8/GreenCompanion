@@ -118,6 +118,11 @@ def login_page():
 
     return render_template("login.html")
 
+if os.getenv("TESTING") == "1":
+    model = None
+else:
+    model = load_model(MODEL_PATH)
+
 @app.route("/sessionLogin",methods=["POST"])
 def session_login():
     data = request.get_json()
