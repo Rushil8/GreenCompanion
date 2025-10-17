@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Plant Care Reminders</title>
+</head>
+<body>
+  <h2>Your Personalized Care Reminders</h2>
+  <ul>
+    {% for reminder in reminders %}
+      <li>{{ reminder }}</li>
+    {% endfor %}
+  </ul>
+</body>
+</html>

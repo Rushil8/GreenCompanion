@@ -46,6 +46,28 @@ def predict_soil_type(img_path):
     confidence = float(np.max(prediction)) * 100
     return class_labels[predicted_class], confidence
 
+from flask_caching import Cache
+import requests
+
+app = Flask(__name__)
+app.config['CACHE_TYPE'] = 'SimpleCache'
+app.config['CACHE_DEFAULT_TIMEOUT'] = 1800
+cache = Cache(app)
+
+API_KEY = "0fc745366ffc8f7d7aadae8d4103ba9a"
+
+@cache.memoize(timeout=1800)
+def get_weather(city):
+    url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
+    response = requests.get(url)
+    return response.json()
+
+@app.route("/weather/<city>")
+def weather(city):
+    data = get_weather(city)
+    return jsonify(data)
+
+
 
 def get_user_city():
     try:
@@ -95,6 +117,36 @@ def login_page():
             return render_template("login.html", error="Invalid email or password")
 
     return render_template("login.html")
+
+
+from datetime import datetime
+from flask import jsonify
+
+@app.route("/reminders", methods=["GET"])
+def reminders():
+    if "user_id" not in session:
+        return redirect("/login")
+
+    user_id = session["user_id"]
+    garden_ref = db.collection("users").document(user_id).collection("garden").stream()
+    reminders = []
+
+    for plant_doc in garden_ref:
+        plant = plant_doc.to_dict()
+        name = plant.get("name", "Unknown Plant")
+        season = plant.get("season", "").lower()
+
+        if season == "summer":
+            reminders.append(f"Water {name} daily in the morning or evening.")
+        elif season == "winter":
+            reminders.append(f"Water {name} every 3 days; protect from frost.")
+        elif season == "rainy":
+            reminders.append(f"Check {name} thrives in good drainage to prevent rot.")
+        else:
+            reminders.append(f"Regularly check {name} for pests and fertilize weekly.")
+
+    return render_template("reminders.html", reminders=reminders)
+
 
 @app.route("/sessionLogin",methods=["POST"])
 def session_login():

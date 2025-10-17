@@ -10,7 +10,7 @@ Growth Logging: Add notes, dates, and care activities for each plant and view de
 Weather Integration: Automatic or manual city-based weather updates with advice on watering and care.
 User Authentication: Secure login and registration powered by Firebase, with personalized data storage.
 Responsive Dashboard: Central hub for garden management, growth tracking, and weather monitoring.
-
+Added Document caching feature.
 
 Technology Stack
 Backend: Python, Flask
