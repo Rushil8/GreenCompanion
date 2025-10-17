@@ -160,11 +160,9 @@ def detect_disease():
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
         file.save(filepath)
 
-        # Preprocess image for model prediction
         img = image.load_img(filepath, target_size=(128, 128))
         img_array = np.expand_dims(image.img_to_array(img) / 255.0, axis=0)
 
-        # Make prediction
         predictions = disease_model.predict(img_array)
         predicted_class = np.argmax(predictions)
         confidence = round(float(np.max(predictions)) * 100, 2)
