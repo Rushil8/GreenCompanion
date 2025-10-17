@@ -118,6 +118,36 @@ def login_page():
 
     return render_template("login.html")
 
+
+from datetime import datetime
+from flask import jsonify
+
+@app.route("/reminders", methods=["GET"])
+def reminders():
+    if "user_id" not in session:
+        return redirect("/login")
+
+    user_id = session["user_id"]
+    garden_ref = db.collection("users").document(user_id).collection("garden").stream()
+    reminders = []
+
+    for plant_doc in garden_ref:
+        plant = plant_doc.to_dict()
+        name = plant.get("name", "Unknown Plant")
+        season = plant.get("season", "").lower()
+
+        if season == "summer":
+            reminders.append(f"Water {name} daily in the morning or evening.")
+        elif season == "winter":
+            reminders.append(f"Water {name} every 3 days; protect from frost.")
+        elif season == "rainy":
+            reminders.append(f"Check {name} thrives in good drainage to prevent rot.")
+        else:
+            reminders.append(f"Regularly check {name} for pests and fertilize weekly.")
+
+    return render_template("reminders.html", reminders=reminders)
+
+
 @app.route("/sessionLogin",methods=["POST"])
 def session_login():
     data = request.get_json()
