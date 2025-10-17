@@ -46,6 +46,28 @@ def predict_soil_type(img_path):
     confidence = float(np.max(prediction)) * 100
     return class_labels[predicted_class], confidence
 
+from flask_caching import Cache
+import requests
+
+app = Flask(__name__)
+app.config['CACHE_TYPE'] = 'SimpleCache'
+app.config['CACHE_DEFAULT_TIMEOUT'] = 1800
+cache = Cache(app)
+
+API_KEY = "0fc745366ffc8f7d7aadae8d4103ba9a"
+
+@cache.memoize(timeout=1800)
+def get_weather(city):
+    url = f"https://api.openweathermap.org/data/2.5/weather?q={city}&appid={API_KEY}&units=metric"
+    response = requests.get(url)
+    return response.json()
+
+@app.route("/weather/<city>")
+def weather(city):
+    data = get_weather(city)
+    return jsonify(data)
+
+
 
 def get_user_city():
     try:
@@ -120,6 +142,39 @@ def dashboard():
         weather_data = get_weather(city)
 
     return render_template("dashboard.html", weather=weather_data)
+
+
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing import image
+import numpy as np
+
+DISEASE_MODEL_PATH = "plant_disease_model.h5"
+disease_model = load_model(DISEASE_MODEL_PATH)
+
+disease_labels = ["Healthy", "Leaf Spot", "Rust", "Mildew", "Blight"]
+
+@app.route("/detect_disease", methods=["GET", "POST"])
+def detect_disease():
+    if request.method == "POST":
+        file = request.files['plant_image']
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+        file.save(filepath)
+
+        img = image.load_img(filepath, target_size=(128, 128))
+        img_array = np.expand_dims(image.img_to_array(img) / 255.0, axis=0)
+
+        predictions = disease_model.predict(img_array)
+        predicted_class = np.argmax(predictions)
+        confidence = round(float(np.max(predictions)) * 100, 2)
+        disease = disease_labels[predicted_class]
+
+        return render_template("disease_result.html",
+                               disease=disease,
+                               confidence=confidence,
+                               image_url=filepath)
+    
+    return render_template("disease_upload.html")
+
 
 @app.route("/register", methods=["GET", "POST"])
 def register_page():
