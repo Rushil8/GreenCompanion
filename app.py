@@ -143,6 +143,41 @@ def dashboard():
 
     return render_template("dashboard.html", weather=weather_data)
 
+
+from tensorflow.keras.models import load_model
+from tensorflow.keras.preprocessing import image
+import numpy as np
+
+DISEASE_MODEL_PATH = "plant_disease_model.h5"
+disease_model = load_model(DISEASE_MODEL_PATH)
+
+disease_labels = ["Healthy", "Leaf Spot", "Rust", "Mildew", "Blight"]
+
+@app.route("/detect_disease", methods=["GET", "POST"])
+def detect_disease():
+    if request.method == "POST":
+        file = request.files['plant_image']
+        filepath = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
+        file.save(filepath)
+
+        # Preprocess image for model prediction
+        img = image.load_img(filepath, target_size=(128, 128))
+        img_array = np.expand_dims(image.img_to_array(img) / 255.0, axis=0)
+
+        # Make prediction
+        predictions = disease_model.predict(img_array)
+        predicted_class = np.argmax(predictions)
+        confidence = round(float(np.max(predictions)) * 100, 2)
+        disease = disease_labels[predicted_class]
+
+        return render_template("disease_result.html",
+                               disease=disease,
+                               confidence=confidence,
+                               image_url=filepath)
+    
+    return render_template("disease_upload.html")
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register_page():
     if request.method == "POST":
